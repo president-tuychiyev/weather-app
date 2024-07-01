@@ -1,0 +1,29 @@
+services:
+  weather:
+    container_name: weather
+    build:
+      context: .
+      dockerfile: Dockerfile
+      network: host
+    volumes:
+      - .:/var/www
+    ports:
+      - 8000:80
+    networks:
+      - weather_network
+  pgsql:
+    container_name: pgsql_weather
+    image: postgres:14.5-alpine
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=weather
+      - POSTGRES_USER=weather
+      - POSTGRES_PASSWORD=weather
+    volumes:
+      - './data:/var/lib/postgresql/data'
+    networks:
+      - weather_network
+networks:
+  weather_network:
+    driver: bridge
